@@ -1,27 +1,27 @@
 # MealCraft
 
-MealCraft הוא אפליקציית ווב לניהול ותכנון ארוחות משפחתיות כשרות. האפליקציה מאפשרת לנהל ספריית מתכונים אישית (כולל סגנון מטבח, סוג כשרות, רמת קושי וזמני הכנה), לתכנן ארוחה שלמה לפי מספר סועדים וזמן פנוי — עם הצעת מתכונים מבוססת AI (Gemini) שמתאימה את עצמה לאילוצים שהוגדרו — וליצור אוטומטית רשימת קניות המחושבת לפי כמות הסועדים, יחד עם מעקב אחר התקדמות ההכנה של כל מתכון בארוחה.
+MealCraft is a web app for planning and managing kosher family meals. You keep a personal recipe library (cuisine style, kosher type, difficulty, prep/cook time), plan a full meal around how many people you're feeding and how much time you have — with AI-generated recipe suggestions (Gemini) that adapt to whatever constraints you set — and get a shopping list built automatically from the recipes, scaled to the number of people and with progress tracking for how far along each recipe is.
 
 ## Tech Stack
 
 - **Frontend:** React 19 (Vite), React Router, Tailwind CSS, axios, react-hot-toast, lucide-react
 - **Backend:** Node.js + Express
 - **Database:** MongoDB (Mongoose)
-- **Image storage:** Cloudinary (דרך multer-storage-cloudinary)
-- **AI:** Google Gemini (`@google/generative-ai`) להצעת מתכונים
+- **Image storage:** Cloudinary (via multer-storage-cloudinary)
+- **AI:** Google Gemini (`@google/generative-ai`) for recipe suggestions
 
-## תכונות עיקריות
+## Features
 
-- **ניהול מתכונים** (`/recipes`) — יצירה, עריכה ומחיקה של מתכונים עם רכיבים, הוראות הכנה, רמת קושי, זמן הכנה/בישול, מספר מנות, סגנון מטבח (אשכנזי/ספרדי/מזרחי/ים תיכוני/אסייתי/אמריקאי/מודרני), סוג כשרות (בשרי/חלבי/פרווה), דירוג, תגיות, הערות ומספר פעמים שהמתכון בושל בפועל.
-- **העלאת תמונות** למתכונים דרך Cloudinary (רק תמונות שהעלה המשתמש, לא תמונות AI, מטעמי זכויות יוצרים).
-- **חיפוש וסינון** מתכונים לפי סגנון, קטגוריה, סוג כשרות, רמת קושי וטקסט חופשי (אינדקס טקסט על שם/תגיות/רכיבים), עם מיון לפי דירוג, פופולריות או קושי.
-- **תכנון ארוחה** (`/planner`) — הגדרת ארוחה לפי מספר סועדים, סגנון, רכיבים רצויים, זמן זמין ורמת קושי מקסימלית, עם חיפוש מתכונים קיימים לפי התאמת רכיבים וניקוד, וכן קבלת **הצעות מתכונים חדשים מבוססות AI** (Gemini) בהתאם לאילוצים שהוגדרו.
-- **רשימת קניות אוטומטית** (`/shopping`) — יצירת רשימת קניות ממתכוני הארוחה, עם חישוב כמויות שמותאם אוטומטית למספר הסועדים, וסימון פריטים שנקנו.
-- **מעקב הכנת ארוחה** (`/preparation`) — מעקב אחר סטטוס ההכנה של כל מתכון בארוחה (ממתין / בתהליך / הושלם), עם עדכון אוטומטי של מונה הפעמים שהמתכון בושל בפועל.
+- **Recipe management** (`/recipes`) — create, edit and delete recipes with ingredients, instructions, difficulty, prep/cook time, servings, cuisine style (Ashkenazi/Sephardic/Mizrahi/Mediterranean/Asian/American/modern), kosher type (meat/dairy/pareve), rating, tags, notes, and a counter for how many times you've actually cooked it.
+- **Recipe photos** via Cloudinary — only images you upload yourself, no AI-generated images, to stay on the right side of copyright.
+- **Search and filtering** by style, category, kosher type, difficulty, and free text (text index on name/tags/ingredients), sortable by rating, popularity or difficulty.
+- **Meal planning** (`/planner`) — set up a meal by number of people, style, desired ingredients, available time and max difficulty, then either match it against your existing recipes (scored by ingredient fit) or get **new AI-generated recipe suggestions** (Gemini) built around those same constraints.
+- **Automatic shopping list** (`/shopping`) — builds a shopping list from a meal's recipes, scales quantities to the number of people, and lets you check items off as you buy them.
+- **Meal prep tracking** (`/preparation`) — tracks the status of each recipe in a meal (pending / in progress / done), and automatically bumps the "times cooked" counter when a recipe is finished.
 
-## התקנה
+## Setup
 
-הפרויקט מחולק ל-`client` (React) ו-`server` (Express), עם `package.json` נוסף בשורש שמריץ את שניהם יחד.
+The project is split into `client` (React) and `server` (Express), with a top-level `package.json` that runs both together.
 
 ```bash
 git clone https://github.com/EyalHar/MealCraft.git
@@ -29,11 +29,11 @@ cd MealCraft
 npm run install:all
 ```
 
-הפקודה `install:all` מתקינה את התלויות גם ב-`server` וגם ב-`client`.
+`install:all` installs dependencies in both `server` and `client`.
 
-### משתני סביבה
+### Environment variables
 
-יש ליצור קובץ `.env` בתוך תיקיית `server` (לפי הדוגמה ב-`server/.env.example`):
+Create a `.env` file inside `server` (see `server/.env.example` for reference):
 
 ```env
 MONGODB_URI=mongodb+srv://<user>:<password>@cluster0.xxxxx.mongodb.net/mealcraft
@@ -44,48 +44,48 @@ GEMINI_API_KEY=your_gemini_api_key
 PORT=5000
 ```
 
-- `MONGODB_URI` — חיבור למסד נתונים MongoDB (למשל MongoDB Atlas).
-- `CLOUDINARY_*` — פרטי חשבון Cloudinary לאחסון תמונות מתכונים.
-- `GEMINI_API_KEY` — מפתח API של Google Gemini עבור הצעות המתכונים ב-AI.
-- `PORT` — פורט השרת (ברירת מחדל: `5000`).
+- `MONGODB_URI` — your MongoDB connection string (e.g. MongoDB Atlas).
+- `CLOUDINARY_*` — Cloudinary account details for storing recipe images.
+- `GEMINI_API_KEY` — Google Gemini API key, used for the AI recipe suggestions.
+- `PORT` — server port (defaults to `5000`).
 
-## הרצה
+## Running it
 
-מריצים משורש הפרויקט:
+From the project root:
 
 ```bash
 npm run dev
 ```
 
-זה מפעיל את שרת ה-Express (`npm run server`, על בסיס `nodemon`) ואת שרת הפיתוח של Vite עבור ה-client (`npm run client`) יחד.
+This starts the Express server (`npm run server`, via `nodemon`) and the Vite dev server for the client (`npm run client`) together.
 
-ניתן גם להריץ כל צד בנפרד:
+You can also run each side on its own:
 
 ```bash
-# שרת בלבד (בתיקיית server)
+# server only (from the server directory)
 npm run dev      # nodemon server.js
 npm start        # node server.js
 
-# קליינט בלבד (בתיקיית client)
+# client only (from the client directory)
 npm run dev       # vite dev server
-npm run build      # build לפרודקשן
-npm run preview    # תצוגה מקדימה של ה-build
-npm run lint       # בדיקת ESLint
+npm run build      # production build
+npm run preview    # preview the build
+npm run lint       # run ESLint
 ```
 
-## מבנה הפרויקט
+## Project structure
 
 ```
 MealCraft/
-├── package.json          # סקריפטים כלליים להרצת client+server יחד
-├── client/                # אפליקציית React (Vite)
+├── package.json          # top-level scripts for running client+server together
+├── client/                # React app (Vite)
 │   └── src/
-│       ├── api/           # שכבת תקשורת מול ה-API (axios)
-│       ├── components/    # רכיבים משותפים (RecipeCard, RecipeForm, Navbar וכו')
+│       ├── api/           # API layer (axios)
+│       ├── components/    # shared components (RecipeCard, RecipeForm, Navbar, etc.)
 │       └── pages/          # RecipesPage, MealPlannerPage, ShoppingPage, PreparationPage
-└── server/                 # שרת Express
-    ├── config/              # חיבור ל-MongoDB ול-Cloudinary
+└── server/                 # Express server
+    ├── config/              # MongoDB and Cloudinary setup
     ├── models/              # Recipe, Meal, ShoppingList (Mongoose)
     ├── routes/               # recipes, meals, shopping, ai
-    └── server.js              # נקודת הכניסה של השרת
+    └── server.js              # server entry point
 ```
