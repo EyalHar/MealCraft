@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Plus, Trash2, X } from 'lucide-react';
-import Stars from './Stars';
+import ProductAutocomplete from './ProductAutocomplete';
 
 const STYLES = ['אשכנזי','ספרדי','מזרחי','ים תיכוני','אסייתי','אמריקאי','מודרני','אחר'];
 const CATEGORIES = ['מנה ראשונה','מרק','סלט','מנה עיקרית','תוספת','קינוח','מאפה','שתייה'];
@@ -32,6 +32,11 @@ export default function RecipeForm({ initial, onSave, onCancel }) {
   const setIngredient = (i, field, value) => {
     const ing = [...form.ingredients];
     ing[i] = { ...ing[i], [field]: value };
+    set('ingredients', ing);
+  };
+  const selectProduct = (i, product) => {
+    const ing = [...form.ingredients];
+    ing[i] = { ...ing[i], name: product.name, unit: ing[i].unit || product.defaultUnit };
     set('ingredients', ing);
   };
   const addIngredient = () => set('ingredients', [...form.ingredients, { name: '', amount: '', unit: '' }]);
@@ -86,7 +91,15 @@ export default function RecipeForm({ initial, onSave, onCancel }) {
       <FormField label="מרכיבים *">
         {form.ingredients.map((ing, i) => (
           <div key={i} style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem', alignItems: 'center' }}>
-            <input className="form-input" value={ing.name} onChange={(e) => setIngredient(i, 'name', e.target.value)} placeholder="שם מרכיב" style={{ flex: 3 }} required />
+            <div style={{ flex: 3 }}>
+              <ProductAutocomplete
+                value={ing.name}
+                onChange={(v) => setIngredient(i, 'name', v)}
+                onSelect={(p) => selectProduct(i, p)}
+                placeholder="התחל להקליד שם מוצר..."
+                required
+              />
+            </div>
             <input className="form-input" value={ing.amount} onChange={(e) => setIngredient(i, 'amount', e.target.value)} placeholder="כמות" style={{ flex: 1 }} required />
             <input className="form-input" value={ing.unit} onChange={(e) => setIngredient(i, 'unit', e.target.value)} placeholder="יחידה" style={{ flex: 1 }} />
             {form.ingredients.length > 1 && (

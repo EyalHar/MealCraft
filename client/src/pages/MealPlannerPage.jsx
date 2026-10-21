@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Plus, X, Sparkles, Search, CheckCircle, BookPlus } from 'lucide-react';
 import { recipesApi, mealsApi, aiApi } from '../api';
 import RecipeCard from '../components/RecipeCard';
+import ProductAutocomplete from '../components/ProductAutocomplete';
 import toast from 'react-hot-toast';
 
 const STYLES = ['כל סגנון','אשכנזי','ספרדי','מזרחי','ים תיכוני','אסייתי','אמריקאי','מודרני','אחר'];
@@ -22,11 +23,12 @@ export default function MealPlannerPage() {
 
   const set = (f, v) => setForm((p) => ({ ...p, [f]: v }));
 
-  const addIngredient = () => {
-    if (ingredientInput.trim()) {
-      set('ingredients', [...form.ingredients, ingredientInput.trim()]);
-      setIngredientInput('');
+  const addIngredient = (name = ingredientInput) => {
+    const trimmed = name.trim();
+    if (trimmed && !form.ingredients.includes(trimmed)) {
+      set('ingredients', [...form.ingredients, trimmed]);
     }
+    setIngredientInput('');
   };
 
   const removeIngredient = (i) => set('ingredients', form.ingredients.filter((_, idx) => idx !== i));
@@ -144,14 +146,14 @@ export default function MealPlannerPage() {
             <div>
               <label className="form-label">מרכיבים עיקריים</label>
               <div style={{ display: 'flex', gap: '0.5rem' }}>
-                <input
-                  className="form-input"
+                <ProductAutocomplete
                   value={ingredientInput}
-                  onChange={(e) => setIngredientInput(e.target.value)}
+                  onChange={setIngredientInput}
+                  onSelect={(p) => addIngredient(p.name)}
                   placeholder="הוסף מרכיב..."
                   onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addIngredient())}
                 />
-                <button type="button" className="btn-outline" onClick={addIngredient} style={{ whiteSpace: 'nowrap', padding: '0.5rem 0.75rem' }}>הוסף</button>
+                <button type="button" className="btn-outline" onClick={() => addIngredient()} style={{ whiteSpace: 'nowrap', padding: '0.5rem 0.75rem' }}>הוסף</button>
               </div>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.375rem', marginTop: '0.5rem' }}>
                 {form.ingredients.map((ing, i) => (

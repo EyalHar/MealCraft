@@ -36,6 +36,10 @@ export const shoppingApi = {
   updateItem: (listId, itemId, data) => api.put(`/shopping/${listId}/items/${itemId}`, data),
 };
 
+export const productsApi = {
+  search: (q, config) => api.get('/products', { params: { q }, ...config }),
+};
+
 export const aiApi = {
   suggestRecipes: (data) => api.post('/ai/suggest-recipes', data),
 };
